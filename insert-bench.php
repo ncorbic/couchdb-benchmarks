@@ -1,7 +1,8 @@
 <?php
 
 $config = array(
-	'method' => 'bulk_insert',
+#	'method' => 'bulk_insert',
+	'method' => 'single_insert',
 	'insertCounts' => array(
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 		10,
@@ -29,6 +30,7 @@ foreach ($config['insertCounts'] as $docCount) {
 	$db->send('delete', '/benchmark_db');
 	$db->send('put', '/benchmark_db');
 
+	$method=$config['method'];
 
 	echo sprintf("-> %s %d docs:\n", $method, $docCount);
 
@@ -67,9 +69,10 @@ foreach ($config['insertCounts'] as $docCount) {
 	}
 
 	clearstatcache();
+	$cmd="ls -l $(find /home/ -name 'benchmark_db*' | xargs) | awk '{print $5}' | paste -s -d+ - | bc";
 	$beforeCompact = array(
 		'stats' => $db->send('get', '/benchmark_db'),
-		'fileSize' => filesize('/usr/local/var/lib/couchdb/benchmark_db.couch'),
+		'fileSize' => shell_exec($cmd),
 	);
 
 	$compactStart = microtime(true);
@@ -86,7 +89,7 @@ foreach ($config['insertCounts'] as $docCount) {
 	clearstatcache();
 	$afterCompact = array(
 		'stats' => $db->send('get', '/benchmark_db'),
-		'fileSize' => filesize('/usr/local/var/lib/couchdb/benchmark_db.couch'),
+		'fileSize' => shell_exec($cmd),
 	);
 
 	echo "\n\n";
@@ -139,7 +142,7 @@ class CouchDb {
 
 	public function send($method, $resource, $document = array()) {
 		$url = sprintf(
-			'http://%s:%s%s',
+			'http://admin:admin123@%s:%s%s',
 			$this->config['host'],
 			$this->config['port'],
 			$resource
