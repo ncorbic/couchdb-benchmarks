@@ -9,6 +9,12 @@ If you want to get some more insights into evaluating CouchDB and other #nosql d
 * "Benchmarks: You are Doing it Wrong":http://jan.prima.de/~jan/plok/archives/175-Benchmarks-You-are-Doing-it-Wrong.html
 * "Caveats of Evaluating Databases":http://jan.prima.de/~jan/plok/archives/176-Caveats-of-Evaluating-Databases.html
 
+h1. Install
+
+apt-get install php5 curl libcurl3 libcurl3-dev php5-curl
+Edit insert-bench.php and update your db location as well as credentials.
+If you have couchdb already setup skip steps below.
+
 h1. Setup
 
 I have chosen to run all tests on Amazon EC2 with c1.medium instances. The reason is simply that this will be my production environment, but it has also the benefit that others can easily verify / compare my results.
